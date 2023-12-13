@@ -11,7 +11,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent {
+  user: User | null = null
   model: { username: string | undefined, password: string | undefined } = {
+
     username: undefined,
     password: undefined
   }
@@ -24,6 +26,9 @@ export class NavComponent {
 
   ngOnInit(): void {
     this.currentUser$ = this.accountService.currentUser$
+    this.currentUser$.subscribe({
+      next: user => { this.user = user }
+    })
   }
 
   getCurrentUser() {
