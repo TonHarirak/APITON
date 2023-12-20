@@ -44,7 +44,7 @@ export class NavComponent {
         this.router.navigateByUrl('/members')
 
       },
-      error: err => this.toastr.error(err.error)
+      //error: err => this.toastr.error(err.error)
     })
     console.log(this.model)
   }

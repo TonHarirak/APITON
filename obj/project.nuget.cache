@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "SBtFA/3P84YY06eC8OWresGF49DoC2aazIyjUZMLVefEfz59njDpCVxGBR3dyXqpp2xe7UJQqa4w0dYla/5fYQ==",
+  "dgSpecHash": "c4zMzJQCZb6dKTKQF+CNFKb1fl0Bfqb+bzFjWfemrSaug4JTPnjEHJw3HbplbpBIq/iD5hs8CC2GC19Dl/3U1A==",
   "success": true,
   "projectFilePath": "C:\\IPHari\\in\\APITON\\APITON.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ICT\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\ICT\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\ICT\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ICT\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.7\\microsoft.aspnetcore.authentication.jwtbearer.7.0.7.nupkg.sha512",
+    "C:\\Users\\ICT\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\ICT\\.nuget\\packages\\microsoft.data.sqlite.core\\7.0.7\\microsoft.data.sqlite.core.7.0.7.nupkg.sha512",
     "C:\\Users\\ICT\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.7\\microsoft.entityframeworkcore.7.0.7.nupkg.sha512",
     "C:\\Users\\ICT\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.7\\microsoft.entityframeworkcore.abstractions.7.0.7.nupkg.sha512",

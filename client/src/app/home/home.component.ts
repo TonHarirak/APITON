@@ -6,16 +6,17 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   regisMode = false
   users: any
 
 
   constructor(private http: HttpClient) { }
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-    this.getUser
-  }
+
+  //ngOnInit(): void {
+  //throw new Error('Method not implemented.');
+  //this.getUser
+  //}
   regisToggle() {
     this.regisMode = !this.regisMode
   }

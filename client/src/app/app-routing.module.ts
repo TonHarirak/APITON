@@ -6,6 +6,9 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MessagesComponent } from './messages/messages.component';
 import { authGuard } from './_guard/auth.guard';
+import { TestErrorComponent } from './errors/test-error/test-error.component';
+import { ServerErrorComponent } from './errors/server-error/server-error.component';
+import { NotFoundComponent } from './errors/not-found/not-found.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,12 +16,18 @@ const routes: Routes = [
     path: '', runGuardsAndResolvers: 'always', canActivate: [authGuard], children: [
       { path: 'members', component: MemberListComponent, canActivate: [authGuard] },
       { path: 'members/:id', component: MemberDetailComponent },
+      { path: 'members/name/:username', component: MemberDetailComponent },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
 
     ]
   },
+  { path: 'errors', component: TestErrorComponent },
+
+  { path: 'not-found', component: NotFoundComponent },
+  { path: 'server-error', component: ServerErrorComponent },
   { path: '**', component: HomeComponent, pathMatch: 'full' }, // ** = anything not in list
+
 
 ]
 @NgModule({
