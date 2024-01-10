@@ -4,6 +4,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ToastrModule } from 'ngx-toastr';
 import { TabsModule } from 'ngx-bootstrap/tabs'
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 
@@ -15,6 +16,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     ToastrModule.forRoot(),
     TabsModule.forRoot(),
     NgxSpinnerModule.forRoot({ type: 'square-spin' }),
+    FileUploadModule,
 
   ],
   exports: [
@@ -22,7 +24,9 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     BsDropdownModule,
     ToastrModule,
     TabsModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    FileUploadModule,
+
   ]
 
 })
