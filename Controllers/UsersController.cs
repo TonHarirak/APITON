@@ -5,6 +5,7 @@ using APITON.Data;
 using APITON.DTOs;
 using APITON.Entities;
 using APITON.Extensions;
+using APITON.Helpers;
 using APITON.Interface;
 using APITON.Interfaces;
 using AutoMapper;
@@ -28,12 +29,27 @@ public class UsersController : BaseApiController
     }
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    public async Task<ActionResult<PageList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
     {
+        var username = User.GetUsername();
+        if (username is null) return NotFound();
 
-        return Ok(await _userRepository.GetMembersAsync());
+        var currentUser = await _userRepository.GetUserByUserNameAsync(username);
+        if (currentUser is null) return NotFound();
+        userParams.CurrentUserName = currentUser.UserName;
+        if (string.IsNullOrEmpty(userParams.Gender))
+        {
+            if (currentUser.Gender != "non-binary")
+                userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+            else
+                userParams.Gender = "non-binary";
+        }
+
+        var pages = await _userRepository.GetMembersAsync(userParams);
+        Response.AddPaginationHeader(
+            new PaginationHeader(pages.CurrentPage, pages.PageSize, pages.TotalCount, pages.TotalPages));
+        return Ok(pages);
     }
-    //public async Task<ActionResult<MemberDto?>> GetUser(int id) => await _userRepository.GetUserByIdAsync(id);
     [AllowAnonymous]
 
     [HttpGet("{id}")]

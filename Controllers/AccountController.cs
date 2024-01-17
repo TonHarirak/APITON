@@ -8,18 +8,22 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APITON.Interface;
+using AutoMapper;
 
 namespace API.Controllers;
 
 public class AccountController : BaseApiController
 {
+    private readonly IMapper _mapper;
     private readonly DataContext _dataContext;
     private readonly ITokenService _tokenService;
 
-    public AccountController(DataContext dataContext, ITokenService tokenService)
+    public AccountController(IMapper mapper, DataContext dataContext, ITokenService tokenService)
     {
+        _mapper = mapper;
         _dataContext = dataContext;
         _tokenService = tokenService;
+
     }
     [HttpPost("register")] //ApiController automatically binds the object
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
@@ -27,18 +31,18 @@ public class AccountController : BaseApiController
         if (await isUserExists(registerDto.Username!))
             return BadRequest("username is already exists");
 
+        var user = _mapper.Map<AppUser>(registerDto);
         using var hmacSHA256 = new HMACSHA256();
-        var user = new AppUser
-        {
-            UserName = registerDto.Username!.Trim().ToLower(),
-            PasswordHash = hmacSHA256.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password.Trim())),
-            PasswordSalt = hmacSHA256.Key
-        };
+        user.UserName = registerDto.Username!.Trim().ToLower();
+        user.PasswordHash = hmacSHA256.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password!.Trim()));
+        user.PasswordSalt = hmacSHA256.Key;
 
         _dataContext.Users.Add(user);
         await _dataContext.SaveChangesAsync();
         return new UserDto
         {
+            Aka = user.Aka,
+            Gender = user.Gender,
             Username = user.UserName,
             Token = _tokenService.CreateToken(user)
         };
@@ -67,6 +71,8 @@ public class AccountController : BaseApiController
         }
         return new UserDto
         {
+            Aka = user.Aka,
+            Gender = user.Gender,
             Username = user.UserName,
             Token = _tokenService.CreateToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain)?.Url
