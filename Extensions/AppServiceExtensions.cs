@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using APITON.ClassLibrary1;
 using APITON.Data;
+using APITON.Helpers;
 using APITON.Interface;
 using APITON.Interfaces;
 using APITON.Service;
@@ -21,9 +22,12 @@ public static class AppServiceExtensions
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<LogUserActivity>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.Configure<CloudinarySettings>(conf.GetSection("CloudinarySettings"));
         services.AddScoped<IImageService, ImageService>();
+        services.AddScoped<IlikesRepository, LikesRepository>();
+
 
         return services;
     }
