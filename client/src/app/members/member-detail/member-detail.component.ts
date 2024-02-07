@@ -1,30 +1,54 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
-import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TabDirective, TabsModule, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { TimeagoModule } from 'ngx-timeago';
 import { Member } from 'src/app/_models/members';
 import { MembersService } from 'src/app/_services/members.service';
+import { MemberMessagesComponent } from '../member-messages/member-messages.component';
+import { Message } from 'src/app/_models/message';
+import { MessageService } from 'src/app/_services/message.service';
+
 
 @Component({
   selector: 'app-member-detail',
   templateUrl: './member-detail.component.html',
   styleUrls: ['./member-detail.component.css'],
   standalone: true,
-  imports: [CommonModule, TabsModule, GalleryModule, TimeagoModule]
+  imports: [CommonModule, TabsModule, GalleryModule, TimeagoModule, MemberMessagesComponent]
 })
 export class MemberDetailComponent implements OnInit {
 
-  member: Member | undefined
 
   photos: GalleryItem[] = []
+  @ViewChild('memberTabs', { static: true }) memberTabs?: TabsetComponent
+  //                            ^ ให้ static = true หมายถึง memberTabs ต้อง constructed ทันที
+  member: Member = {} as Member
+  activeTab?: TabDirective
+  messages: Message[] = []
 
 
-  constructor(private memberService: MembersService, private route: ActivatedRoute) { }
+  constructor(private messageService: MessageService, private memberService: MembersService, private route: ActivatedRoute) { }
 
-  ngOnInit(): void {
-    this.loadMember()
+  onTabActivated(tab: TabDirective) {
+    this.activeTab = tab
+    if (this.activeTab.heading === 'Messages') {
+      this.loadMessages()
+    }
+  }
+
+  ngOnInit(): void { //
+    // this.loadMember()//<--ไม่ใช้แล้ว เพราะ ได้ member จาก resolver
+    this.route.data.subscribe({
+      next: data => {
+        this.member = data['member'] //เพราะเราตั้งชื่อ member ใน app-routing.module.ts
+        this.getImages()
+      }
+    })
+    this.route.queryParams.subscribe({
+      next: params => params['tab'] && this.selectTab(params['tab'])
+    })
   }
 
   getImages() {
@@ -44,4 +68,19 @@ export class MemberDetailComponent implements OnInit {
       }
     })
   }
+
+  loadMessages() {
+    if (!this.member) return
+    this.messageService.getMessagesThread(this.member.userName).subscribe({
+      next: response => this.messages = response
+    })
+  }
+
+  selectTab(tabHeading: string) {
+    if (!this.memberTabs) return
+    const tab = this.memberTabs.tabs.find(tab => tab.heading === tabHeading)
+    if (!tab) return
+    tab.active = true
+  }
+
 }

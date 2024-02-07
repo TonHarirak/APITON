@@ -35,11 +35,20 @@ public class MessageRepository : IMessageRepository
                           (ms.RecipientUsername == thisUserName && ms.SenderUsername == recipientUserName) ||
                           (ms.RecipientUsername == recipientUserName && ms.SenderUsername == thisUserName)
                       )
-                      .OrderByDescending(ms => ms.DateSent)
+                                              //.OrderByDescending(ms => ms.DateSent)
+                                              .OrderBy(ms => ms.DateSent)
+
                       .ToListAsync();
 
         var unreadMessages = messages
-      .Where(ms => ms.DateRead == null && ms.RecipientUsername == thisUserName)
+      .Where(ms =>
+            (ms.RecipientUsername == thisUserName
+              && ms.IsRecipientDeleted == false
+              && ms.SenderUsername == recipientUserName) ||
+            (ms.RecipientUsername == recipientUserName
+              && ms.IsSenderDeleted == false
+              && ms.SenderUsername == thisUserName)
+        )
       .ToList();
 
         if (unreadMessages.Any())
@@ -55,9 +64,12 @@ public class MessageRepository : IMessageRepository
         var query = _dataContext.Messages.OrderByDescending(ms => ms.DateSent).AsQueryable();
         query = messageParams.Label switch
         {
-            "Inbox" => query.Where(ms => ms.RecipientUsername == messageParams.Username),
-            "Sent" => query.Where(ms => ms.SenderUsername == messageParams.Username),
-            _ => query.Where(ms => ms.RecipientUsername == messageParams.Username && ms.DateRead == null)
+            "Inbox" => query.Where(ms => ms.RecipientUsername == messageParams.Username &&
+                                          ms.IsRecipientDeleted == false),
+            "Sent" => query.Where(ms => ms.SenderUsername == messageParams.Username &&
+                                          ms.IsSenderDeleted == false),
+            _ => query.Where(ms => ms.RecipientUsername == messageParams.Username &&
+                                          ms.IsRecipientDeleted == false && ms.DateRead == null)
         };
         var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
         return await PageList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
