@@ -1,3 +1,18 @@
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
+.is-online {
+    /* animation: blink 1s linear infinite; */
+    color: green;
+}
+
 .card:hover img {
     transform: scale(1.1, 1.1);
     transition-duration: 0.1s;

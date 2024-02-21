@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { TimeagoModule } from 'ngx-timeago';
 import { Message } from 'src/app/_models/message';
@@ -13,26 +13,24 @@ import { NgxLongPress2Module } from 'ngx-long-press2'
   imports: [CommonModule, FontAwesomeModule, TimeagoModule, FormsModule, NgxLongPress2Module],
   selector: 'app-member-messages',
   templateUrl: './member-messages.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./member-messages.component.css']
 })
 export class MemberMessagesComponent {
   @Input() username?: string
-  @Input() messages: Message[] = []
+  //@Input() messages: Message[] = []
   @ViewChild('messageForm') messageForm?: NgForm
   messageContent = ''
   faClock = faClock
   faPaperPlane = faPaperPlane
 
   constructor(private messageService: MessageService) { }
-
   sendMessage() {
     if (!this.username) return
-    this.messageService.sendMessage(this.username, this.messageContent).subscribe({
-      next: response => {
-        this.messages.push(response)
+    this.messageService.sendMessage(this.username, this.messageContent) //เราแก้ไขไปเมื่อกี้ทำให้ ได้ promise กลับมา
+      .then(() => {
         this.messageForm?.reset()
-      }
-    })
+      })
   }
 
   loadMessages() {

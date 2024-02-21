@@ -1,4 +1,5 @@
 ﻿using System;
+using API.Entities;
 using APITON.DTOs;
 using APITON.Entities;
 using APITON.Helpers;
@@ -8,17 +9,36 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace APITON.Data;
-
+#nullable disable
 public class MessageRepository : IMessageRepository
 
 {
     private readonly DataContext _dataContext;
-    private readonly IMapper _mapper;
+    public readonly IMapper _mapper;
 
     public MessageRepository(DataContext dataContext, IMapper mapper)
     {
         _dataContext = dataContext;
         _mapper = mapper;
+    }
+
+    public void AddGroup(MessageGroup group)
+    {
+        _dataContext.MessageGroups.Add(group);
+    }
+    public async Task<Connection> GetConnection(string connectionId)
+    {
+        return await _dataContext.Connections.FindAsync(connectionId);
+    }
+    public async Task<MessageGroup> GetMessageGroup(string groupName)
+    {
+        return await _dataContext.MessageGroups
+            .Include(group => group.Connections)
+            .FirstOrDefaultAsync(group => group.Name == groupName);
+    }
+    public void RemoveConnection(Connection connection)
+    {
+        _dataContext.Connections.Remove(connection);
     }
     public void AddMessage(Message message) => _dataContext.Messages.Add(message);
 

@@ -1,4 +1,5 @@
-﻿using APITON.Entities;
+﻿using API.Entities;
+using APITON.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,8 @@ public class DataContext : IdentityDbContext
     public DbSet<UserLike> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DataContext(DbContextOptions options) : base(options) { }
-
+    public DbSet<MessageGroup> MessageGroups { get; set; }
+    public DbSet<Connection> Connections { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -5,6 +5,7 @@ using APITON.Helpers;
 using APITON.Interface;
 using APITON.Interfaces;
 using APITON.Service;
+using APITON.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -28,8 +29,8 @@ public static class AppServiceExtensions
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<IlikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
-
-
+        services.AddSingleton<PresenceTracker>();
+        services.AddSignalR();
         return services;
     }
 }

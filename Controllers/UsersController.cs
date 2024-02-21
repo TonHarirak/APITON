@@ -27,6 +27,7 @@ public class UsersController : BaseApiController
         _userRepository = userRepository;
         _mapper = mapper;
     }
+    [Authorize(Roles = "Administrator")]
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<PageList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
@@ -61,7 +62,7 @@ public class UsersController : BaseApiController
 
 
     }
-
+    [Authorize(Roles = "Administrator,Moderator,Member")]
     [HttpGet("username/{username}")]
     public async Task<ActionResult<MemberDto?>> GetUserByUserName(string username)
     {

@@ -22,6 +22,15 @@
                     <p>{{member.created| date: 'dd MMM yyyy'}}</p>
                 </div>
             </div>
+            <div>
+                <strong>Name:</strong>
+                <p>{{member.aka}}
+                    <span style="color: green;"
+                        *ngIf="(presenceService.onlineUser$ | async)?.includes(member.userName)">
+                        Online
+                    </span>
+                </p>
+            </div>
             <div class="card-footer">
                 <div class="btn-group d-flex">
                     <button class="btn btn-primary">Like</button>
@@ -48,7 +57,9 @@
             <tab heading="Messages" (selectTab)="onTabActivated($event)">
                 <!-- <h5>Messages</h5> -->
                 <!-- <p>messages....</p> -->
-                <app-member-messages [username]="member.userName" [messages]="messages"></app-member-messages>
+                <!--<app-member-messages [username]="member.userName" [messages]="messages"></app-member-messages> -->
+                <app-member-messages [username]="member.userName"></app-member-messages>
+
             </tab>
         </tabset>
     </div>

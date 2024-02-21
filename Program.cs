@@ -1,7 +1,9 @@
+using API.SignalR;
 using APITON.Data;
 using APITON.Entities;
 using APITON.Extensions;
 using APITON.Middleware;
+using APITON.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +18,10 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+app.UseCors(builder => builder.AllowAnyHeader()
+.AllowAnyMethod()
+.AllowCredentials()
+.WithOrigins("https://localhost:4200"));
 
 app.UseAuthentication();
 
@@ -24,16 +29,22 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
+
+app.MapHub<MessageHub>("hubs/message");
 
 using var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;
 try
 {
     var dataContext = service.GetRequiredService<DataContext>();
-    var userManager = service.GetRequiredService<UserManager<AppUser>>(); //
+    // var userManager = service.GetRequiredService<UserManager<AppUser>>(); //
     await dataContext.Database.MigrateAsync();
-    await Seed.SeedUsers(userManager); //<--
+    var userManager = service.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = service.GetRequiredService<RoleManager<AppRole>>();
+    await Seed.SeedUsers(userManager, roleManager); //<--
+    await dataContext.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]");
+
 }
 catch (System.Exception e)
 {

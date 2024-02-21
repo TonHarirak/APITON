@@ -1,8 +1,9 @@
 <div class="card">
     <div class="card-body">
-        <h5 *ngIf="messages.length <= 0">No messages</h5>
-        <ul class="direct-message" style="height: 620px; overflow-y: auto;" *ngIf="messages.length > 0">
-            <li *ngFor="let message of messages" style="width:95%;">
+        <h5 *ngIf="(messageService.messageThread$ | async)?.length === 0">No messages</h5>
+        <ul #messages [scrollTop]="messages.scrollHeight" class="direct-message"
+            style="height: 620px; overflow-y: auto;" *ngIf="(messageService.messageThread$ | async)!.length > 0">
+            <li *ngFor="let message of (messageService.messageThread$ | async)" style="width:95%;">
             <li *ngFor="let message of messages">
                 <div class="row">
                     <div [class]="message.senderUsername === username 
@@ -50,7 +51,8 @@
                                         (unread)</span>
                                     <span class="text-success"
                                         *ngIf="message.dateRead && message.senderUsername !== username">
-                                        (read {{message.dateRead+'Z' | timeago}})</span>
+                                        <!-- (read {{message.dateRead+'Z' | timeago}})</span>-->
+                                        {{message.dateSent | timeago}}</span>
                                 </small>
                             </div>
                             <p>{{message.content}}</p>
